@@ -1,0 +1,7 @@
+CLIENTES (id PK, nome, cpf, telefone)
+    1 ──── N
+CARROS (id PK, placa, marca, modelo, ano, cliente_id FK)
+
+USUARIOS (id PK, nome, email, senha)   ← só para o login
+
+Um cliente tem vários carros, e a FK fica no lado N (cliente_id em carros).
