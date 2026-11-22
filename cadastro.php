@@ -1,16 +1,23 @@
 <?php
-include "conexão.php";
+include "conexao.php";
 
 $msg = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nome = $_POST["nome"];
-    $email = $_POST["email"];
+    $nome = mysqli_real_escape_string($conn, $_POST["nome"]);
+    $email = mysqli_real_escape_string($conn, $_POST["email"]);
     $senha = $_POST["senha"];
 
-    $hashSenha = password_hash($senha, PASSWORD_DEFAULT);
+$sqlVerifica = "SELECT * FROM usuarios WHERE email = '$email'";
+$resultado = mysqli_query($conn, $sqlVerifica);
 
-    $sql = "INSERT INTO usuarios (nome, email, senha) VALUES ('$nome', '$email', '$hashSenha')";
+    if (mysqli_num_rows($resultado) > 0) {
+        $msg = "Email já cadastrado.";
+    } else {
+        $hashSenha = password_hash($senha, PASSWORD_DEFAULT);
+
+        $sql = "INSERT INTO usuarios (nome, email, senha) VALUES ('$nome', '$email', '$hashSenha')";
+    }
 
     if (mysqli_query($conn, $sql)) {
         header("Location: login.php");
@@ -21,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -43,5 +50,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <input type="submit" value="Cadastrar">
     </form>
+
+    <br>
+    <a href="login.php">Já tem uma conta? Faça login</a>
 </body>
 </html>
