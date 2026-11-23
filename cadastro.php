@@ -4,26 +4,27 @@ include "conexao.php";
 $msg = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nome = mysqli_real_escape_string($conn, $_POST["nome"]);
+    $nome  = mysqli_real_escape_string($conn, $_POST["nome"]);
     $email = mysqli_real_escape_string($conn, $_POST["email"]);
     $senha = $_POST["senha"];
 
-$sqlVerifica = "SELECT * FROM usuarios WHERE email = '$email'";
-$resultado = mysqli_query($conn, $sqlVerifica);
+    $sqlVerifica = "SELECT * FROM usuarios WHERE email = '$email'";
+    $resultado = mysqli_query($conn, $sqlVerifica);
 
     if (mysqli_num_rows($resultado) > 0) {
         $msg = "Email já cadastrado.";
     } else {
         $hashSenha = password_hash($senha, PASSWORD_DEFAULT);
 
-        $sql = "INSERT INTO usuarios (nome, email, senha) VALUES ('$nome', '$email', '$hashSenha')";
-    }
+        $sql = "INSERT INTO usuarios (nome, email, senha)
+                VALUES ('$nome', '$email', '$hashSenha')";
 
-    if (mysqli_query($conn, $sql)) {
-        header("Location: login.php");
-        exit();
-    } else {
-        $msg = "Erro ao cadastrar: " . mysqli_error($conn);
+        if (mysqli_query($conn, $sql)) {
+            header("Location: login.php");
+            exit();
+        } else {
+            $msg = "Erro ao cadastrar: " . mysqli_error($conn);
+        }
     }
 }
 ?>
